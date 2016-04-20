@@ -49,6 +49,11 @@ Module.directive('dateTime', ['$compile', '$document', '$filter', 'dateTimeConfi
     require: 'ngModel',
     scope: true,
     link: function (scope, element, attrs, ngModel) {
+
+      element.bind('keydown paste', function (e) {
+        e.preventDefault();
+      });
+
       var format = attrs.format || dateTimeConfig.format,
         parentForm = element.inheritedData('$formController'),
         views = $parse(attrs.views)(scope) || dateTimeConfig.views.concat(),
