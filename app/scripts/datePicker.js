@@ -1,6 +1,19 @@
 'use strict';
 var Module = angular.module('datePicker', []);
 
+$(document).on('touchstart', function (e) {
+  var datePickerWrapper = $('[date-picker-wrapper]')[0];
+  if (datePickerWrapper) {
+    var input = $('input[date-time]');
+    if (!$.contains(datePickerWrapper, $(e.target)[0])) {
+      if (input[0].hasAttribute('auto-close')) {
+        input.blur();
+      }
+    }
+    return;
+  }
+});
+
 Module.constant('datePickerConfig', {
   template: 'templates/datepicker.html',
   view: 'month',
@@ -25,7 +38,7 @@ Module.constant('datePickerConfig', {
 Module.filter('mFormat', function () {
   return function (m, format, tz) {
 
-    if(m === undefined || m === null) {
+    if (m === undefined || m === null) {
       return '';
     }
 
@@ -79,7 +92,7 @@ Module.directive('datePicker', ['datePickerConfig', 'datePickerUtils', function 
         now = scope.now = createMoment(),
         selected = scope.date = createMoment(scope.model || now),
         autoclose = attrs.autoClose === 'true',
-      // Either gets the 1st day from the attributes, or asks moment.js to give it to us as it is localized.
+        // Either gets the 1st day from the attributes, or asks moment.js to give it to us as it is localized.
         firstDay = attrs.firstDay && attrs.firstDay >= 0 && attrs.firstDay <= 6 ? parseInt(attrs.firstDay, 10) : moment().weekday(0).day(),
         setDate,
         prepareViewData,
