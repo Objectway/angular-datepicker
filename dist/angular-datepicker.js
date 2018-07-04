@@ -927,13 +927,21 @@ Module.directive('dateTime', ['$compile', '$document', '$filter', 'dateTimeConfi
           picker.css({top: (pos.top + height) + 'px', left: pos.left + 'px', display: 'block', position: position});
           body.append(picker);
         } else {
-          // relative
+          // relative          
+          var moduleDiv = element.closest('.Module')[0];
           container = angular.element('<div date-picker-wrapper></div>');
           element[0].parentElement.insertBefore(container[0], element[0]);
           container.append(picker);
           //          this approach doesn't work
           //          element.before(picker);
-          picker.css({top: element[0].offsetHeight + 'px', display: 'block'});
+          var pickerRelTop = picker[0].getBoundingClientRect().top - moduleDiv.getBoundingClientRect().top;
+          //if picker overflows its parent, put it over the input field
+          if (pickerRelTop + picker[0].offsetHeight > moduleDiv.offsetHeight) {
+            picker.css({top: -picker[0].offsetHeight + 'px', display: 'block'});
+          //if not...
+          } else {
+            picker.css({top: element[0].offsetHeight + 'px', display: 'block'});
+          }
         }
         picker.bind('mousedown', function (evt) {
           evt.preventDefault();
